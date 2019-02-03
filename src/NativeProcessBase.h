@@ -7,10 +7,10 @@
 #else
 #endif
 
-class NativeProcess : public Napi::ObjectWrap<NativeProcess> {
+class NativeProcessBase : public Napi::ObjectWrap<NativeProcessBase> {
   public:
     static Napi::Object Init(Napi::Env env, Napi::Object exports);
-    NativeProcess(const Napi::CallbackInfo &info);
+    NativeProcessBase(const Napi::CallbackInfo &info);
 
   private:
     static Napi::FunctionReference constructor;

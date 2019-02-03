@@ -1,12 +1,12 @@
-#include "NativeProcess.h"
+#include "NativeProcessBase.h"
 
-Napi::FunctionReference NativeProcess::constructor;
+Napi::FunctionReference NativeProcessBase::constructor;
 
-Napi::Object NativeProcess::Init(Napi::Env env, Napi::Object exports)
+Napi::Object NativeProcessBase::Init(Napi::Env env, Napi::Object exports)
 {
     // This method is used to hook the accessor and method callbacks
-    Napi::Function func = DefineClass(env, "NativeProcess", {
-        InstanceMethod("getMainWindow", &NativeProcess::getMainWindow),
+    Napi::Function func = DefineClass(env, "NativeProcessBase", {
+        InstanceMethod("getMainWindow", &NativeProcessBase::getMainWindow),
     });
 
     // Create a peristent reference to the class constructor. This will allow
@@ -17,22 +17,24 @@ Napi::Object NativeProcess::Init(Napi::Env env, Napi::Object exports)
     // to this destructor to reset the reference when the environment is no longer
     // available.
     constructor.SuppressDestruct();
-    exports.Set("NativeProcess", func);
+    exports.Set("NativeProcessBase", func);
     return exports;
 }
 
-NativeProcess::NativeProcess(const Napi::CallbackInfo &info) : Napi::ObjectWrap<NativeProcess>(info) {
+NativeProcessBase::NativeProcessBase(const Napi::CallbackInfo &info) : Napi::ObjectWrap<NativeProcessBase>(info) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
 }
 
-Napi::Value NativeProcess::getMainWindow(const Napi::CallbackInfo &info) {
+Napi::Value NativeProcessBase::getMainWindow(const Napi::CallbackInfo &info) {
     if (!info[0].IsNumber()) {
         Napi::Error::New(info.Env(), "Expected numeric process id.").ThrowAsJavaScriptException();
     }
     Napi::Number nPid = info[0].As<Napi::Number>();
     int32_t pid = nPid.Int32Value();
+    Napi::Object windowBoundary = Napi::Object::New(info.Env());
 
+#if defined (__APPLE__)
     // Create accessibility object using the process PID
     auto application = AXUIElementCreateApplication(pid);
     if (application == nullptr) {
@@ -47,7 +49,6 @@ Napi::Value NativeProcess::getMainWindow(const Napi::CallbackInfo &info) {
                                    1024,
                                    &windows);
 
-    Napi::Object windowBoundary = Napi::Object::New(info.Env());
     if (windows == nullptr) {
         Napi::TypeError::New(info.Env(), "No windows associated with process.").ThrowAsJavaScriptException();
     } else {
@@ -100,6 +101,9 @@ Napi::Value NativeProcess::getMainWindow(const Napi::CallbackInfo &info) {
         CFRelease(windows);
     }
     CFRelease(application);
+#elif defined (__linux__)
+#elif defined (_WIN32)
+#endif
 
     return windowBoundary;
 }
@@ -107,7 +111,7 @@ Napi::Value NativeProcess::getMainWindow(const Napi::CallbackInfo &info) {
 // Initialize native add-on
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
-    NativeProcess::Init(env, exports);
+    NativeProcessBase::Init(env, exports);
     return exports;
 }
 
