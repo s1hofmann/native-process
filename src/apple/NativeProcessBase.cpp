@@ -34,7 +34,6 @@ Napi::Value NativeProcessBase::getMainWindow(const Napi::CallbackInfo &info) {
     int32_t pid = nPid.Int32Value();
     Napi::Object windowBoundary = Napi::Object::New(info.Env());
 
-#if defined (__APPLE__)
     // Create accessibility object using the process PID
     auto application = AXUIElementCreateApplication(pid);
     if (application == nullptr) {
@@ -101,18 +100,6 @@ Napi::Value NativeProcessBase::getMainWindow(const Napi::CallbackInfo &info) {
         CFRelease(windows);
     }
     CFRelease(application);
-#elif defined (__linux__)
-#elif defined (_WIN32)
-#endif
 
     return windowBoundary;
 }
-
-// Initialize native add-on
-Napi::Object Init(Napi::Env env, Napi::Object exports)
-{
-    NativeProcessBase::Init(env, exports);
-    return exports;
-}
-
-NODE_API_MODULE(native_process, Init)

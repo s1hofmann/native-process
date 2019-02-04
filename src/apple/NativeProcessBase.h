@@ -1,11 +1,7 @@
 #pragma once
 
 #include <napi.h>
-
-#if defined (__APPLE__)
 #include <ApplicationServices/ApplicationServices.h>
-#else
-#endif
 
 class NativeProcessBase : public Napi::ObjectWrap<NativeProcessBase> {
   public:
