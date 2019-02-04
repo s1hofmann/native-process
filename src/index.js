@@ -1,5 +1,5 @@
 const { spawn } = require("child_process");
-const NativeProcess = require("./NativeProcess");
+const { NativeProcess } = require("./native-bridge");
 
 const calc = spawn("/Applications/Calculator.app/Contents/MacOS/Calculator");
 console.log(calc.pid);
