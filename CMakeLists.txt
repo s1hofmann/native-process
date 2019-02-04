@@ -3,17 +3,22 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(nut-native-bridge)
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    set(MACOSX TRUE)
+if ("${CMAKE_HOST_APPLE}")
+    file(GLOB PLATTFORM "${CMAKE_SOURCE_DIR}/src/apple/*.cpp")
+elseif ("${CMAKE_HOST_UNIX}")
+    file(GLOB PLATTFORM "${CMAKE_SOURCE_DIR}/src/linux/*.cpp")
+elseif ("${CMAKE_HOST_WIN32}")
+    file(GLOB PLATTFORM "${CMAKE_SOURCE_DIR}/src/win32/*.cpp")
 endif()
 
-file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+set(SOURCE_FILES "${SOURCE_FILES}" "${PLATTFORM}")
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
-set(LIBS "-framework Foundation -framework Cocoa")
+set(LIBS "")
 set(INCLUDES "")
 
-if (${MACOSX})
+if ("${CMAKE_HOST_APPLE}")
     set(LIBS "${LIBS}" "-framework Foundation -framework Cocoa")
 endif()
 
