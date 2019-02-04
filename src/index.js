@@ -1,20 +1,21 @@
 const { spawn } = require("child_process");
-const { NativeProcess } = require("./native-bridge");
+const { NativeProcess } = require("./NativeProcess");
 
-const calc = spawn("/Applications/Calculator.app/Contents/MacOS/Calculator");
-console.log(calc.pid);
-const p = new NativeProcess();
-setTimeout(() => {
-  try {
-    const window = p.getMainWindow(calc.pid);
-    console.log(
-      `x: ${window.x},
+const p = new NativeProcess(
+  "/Applications/Calculator.app/Contents/MacOS/Calculator"
+);
+console.log(p.process.pid);
+try {
+  const window = p.getMainWindow();
+  console.log(
+    `x: ${window.x},
 y: ${window.y},
 width: ${window.width},
 height: ${window.height}`
-    );
-  } catch (e) {
-    console.error(e);
-  }
-calc.kill();
-}, 200);
+  );
+  const windows = p.getWindows();
+  console.log(windows);
+} catch (e) {
+  console.error(e);
+}
+setTimeout(() => p.close(), 2000);
