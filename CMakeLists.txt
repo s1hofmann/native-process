@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 
-project(native-process)
+project(nut-native-bridge)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     set(MACOSX TRUE)
 endif()
 
-file(GLOB SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
+file(GLOB_RECURSE SOURCE_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
 set(LIBS "-framework Foundation -framework Cocoa")
