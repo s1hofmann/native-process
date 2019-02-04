@@ -36,3 +36,14 @@ Napi::Value NativeProcessBase::getMainWindow(const Napi::CallbackInfo &info) {
 
     return windowBoundary;
 }
+
+Napi::Value NativeProcessBase::getWindows(const Napi::CallbackInfo &info) {
+    if (!info[0].IsNumber()) {
+        Napi::Error::New(info.Env(), "Expected numeric process id.").ThrowAsJavaScriptException();
+    }
+    Napi::Number nPid = info[0].As<Napi::Number>();
+    int32_t pid = nPid.Int32Value();
+    Napi::Object windowBoundary = Napi::Object::New(info.Env());
+
+    return windowBoundary;
+}
