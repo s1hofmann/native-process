@@ -11,4 +11,5 @@ class NativeProcessBase : public Napi::ObjectWrap<NativeProcessBase> {
   private:
     static Napi::FunctionReference constructor;
     Napi::Value getMainWindow(const Napi::CallbackInfo &info);
+    Napi::Value getWindows(const Napi::CallbackInfo &info);
 };
