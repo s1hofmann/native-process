@@ -12,6 +12,7 @@
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
     NativeProcessBase::Init(env, exports);
+    NativeWindowBase::Init(env, exports);
     return exports;
 }
 
