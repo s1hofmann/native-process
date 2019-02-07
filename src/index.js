@@ -7,14 +7,10 @@ const p = new NativeProcess(
 console.log(p.process.pid);
 try {
   const window = p.getMainWindow();
-  console.log(
-    `x: ${window.x},
-y: ${window.y},
-width: ${window.width},
-height: ${window.height}`
-  );
-  const windows = p.getWindows();
-  console.log(windows);
+  console.log(window.y);
+  console.log(window.x);
+  console.log(window.width);
+  console.log(window.height);
 } catch (e) {
   console.error(e);
 }
