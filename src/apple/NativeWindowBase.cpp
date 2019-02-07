@@ -10,6 +10,7 @@ Napi::Object NativeWindowBase::Init(Napi::Env env, Napi::Object exports) {
         InstanceAccessor("y", &NativeWindowBase::getY, nullptr),
         InstanceAccessor("width", &NativeWindowBase::getWidth, nullptr),
         InstanceAccessor("height", &NativeWindowBase::getHeight, nullptr),
+        InstanceAccessor("title", &NativeWindowBase::getTitle, nullptr),
     });
 
     constructor = Napi::Persistent(func);
@@ -93,4 +94,19 @@ Napi::Value NativeWindowBase::getHeight(const Napi::CallbackInfo &info) {
     }
 
     return Napi::Number::New(info.Env(), sizeValue.height);
+}
+
+Napi::Value NativeWindowBase::getTitle(const Napi::CallbackInfo &info) {
+    CFStringRef windowTitleRef = nullptr;
+
+	if (AXUIElementCopyAttributeValue (this->uiElementRef, kAXTitleAttribute, (CFTypeRef*) &windowTitleRef) == kAXErrorSuccess && windowTitleRef != nullptr) {
+		char windowTitle[NativeWindowBase::WINDOW_TITLE_MAX];
+        if (CFStringGetCString(windowTitleRef, windowTitle, NativeWindowBase::WINDOW_TITLE_MAX, kCFStringEncodingUTF8)) {
+            CFRelease (windowTitleRef);
+            return Napi::String::New(info.Env(), windowTitle);
+        }
+        CFRelease (windowTitleRef);
+	}
+
+    Napi::Error::New(info.Env(), "Failed to determine window title.");
 }
