@@ -1,6 +1,10 @@
 #pragma once
 
 #include <napi.h>
+#include <Windows.h>
+
+#include "EnumWindowsParam.h"
+// #include "EnumWindowsCallback.h"
 
 class NativeProcessBase : public Napi::ObjectWrap<NativeProcessBase> {
   public:
