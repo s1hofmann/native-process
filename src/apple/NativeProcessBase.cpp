@@ -95,48 +95,16 @@ Napi::Value NativeProcessBase::getWindows(const Napi::CallbackInfo &info)
     if (windows == nullptr) {
         Napi::TypeError::New(info.Env(), "No windows associated with process.").ThrowAsJavaScriptException();
     } else {
-        CFIndex count = CFArrayGetCount(windows);
+        const CFIndex count = CFArrayGetCount(windows);
         windowBoundaries = Napi::Array::New(info.Env(), count);
         // Loop all windows in the process
-        for (CFIndex i = 0; i < count; ++i) {
+        for (CFIndex idx = 0; idx < count; ++idx) {
             // Get the element at the index
             auto element = (AXUIElementRef)
-                CFArrayGetValueAtIndex(windows, i);
-
-            AXValueRef positionRef = nullptr;
-            AXValueRef sizeRef = nullptr;
-
-            if (AXUIElementCopyAttributeValue(element, kAXPositionAttribute, (CFTypeRef *)&positionRef) != kAXErrorSuccess || positionRef == nullptr) {
-                Napi::TypeError::New(info.Env(), "Failed to determine window position.").ThrowAsJavaScriptException();
-            }
-            if (AXUIElementCopyAttributeValue(element, kAXSizeAttribute, (CFTypeRef *)&sizeRef) != kAXErrorSuccess || sizeRef == nullptr) {
-                Napi::TypeError::New(info.Env(), "Failed to determine window size.").ThrowAsJavaScriptException();
-            }
-
-            CGPoint positionValue;
-            CGSize sizeValue;
-
-            if (!AXValueGetValue(positionRef, kAXValueTypeCGPoint, &positionValue)) {
-                Napi::TypeError::New(info.Env(), "Failed to unpack window position.").ThrowAsJavaScriptException();
-            }
-            if (!AXValueGetValue(sizeRef, kAXValueTypeCGSize, &sizeValue)) {
-                Napi::TypeError::New(info.Env(), "Failed to unpack window size.").ThrowAsJavaScriptException();
-            }
-
-            Napi::Object windowBoundary = Napi::Object::New(info.Env());
-            windowBoundary.Set("x", positionValue.x);
-            windowBoundary.Set("y", positionValue.y);
-            windowBoundary.Set("width", sizeValue.width);
-            windowBoundary.Set("height", sizeValue.height);
-
-            windowBoundaries.Set(i, windowBoundary);
-
-            CFRetain(element);
-            break;
+                CFArrayGetValueAtIndex(windows, idx);
+            windowBoundaries.Set(idx, NativeWindowBase::constructor.New({ Napi::External<AXUIElementRef>::New(info.Env(), &element) }));
         }
-        CFRelease(windows);
     }
-    CFRelease(application);
 
     return windowBoundaries;
 }

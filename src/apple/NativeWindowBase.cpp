@@ -24,6 +24,7 @@ NativeWindowBase::NativeWindowBase(const Napi::CallbackInfo &info)
                                      uiElementRef(*info[0].As<Napi::External<AXUIElementRef>>().Data()) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
+    CFRetain(this->uiElementRef);
 }
 
 NativeWindowBase::~NativeWindowBase() {
