@@ -11,6 +11,9 @@ try {
   console.log(window.x);
   console.log(window.width);
   console.log(window.height);
+
+  const windows = p.getWindows();
+  console.log(windows);
 } catch (e) {
   console.error(e);
 }
