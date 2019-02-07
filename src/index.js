@@ -2,11 +2,12 @@ const { spawn } = require("child_process");
 const { NativeProcess } = require("./NativeProcess");
 
 const p = new NativeProcess(
-  "/Applications/Calculator.app/Contents/MacOS/Calculator"
+  "/Applications/Insomnia.app/Contents/MacOS/Insomnia"
 );
 console.log(p.process.pid);
 try {
   const window = p.getMainWindow();
+  console.log(window);
   console.log(window.y);
   console.log(window.x);
   console.log(window.width);
@@ -14,6 +15,9 @@ try {
 
   const windows = p.getWindows();
   console.log(windows);
+  for (w of windows) {
+    console.log(w.title);
+  }
 } catch (e) {
   console.error(e);
 }
