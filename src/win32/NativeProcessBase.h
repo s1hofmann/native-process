@@ -4,7 +4,9 @@
 #include <Windows.h>
 
 #include "EnumWindowsParam.h"
-// #include "EnumWindowsCallback.h"
+
+// Forward declaration
+BOOL CALLBACK EnumWindowsCallbackFunc(HWND hwnd, LPARAM lParam);
 
 class NativeProcessBase : public Napi::ObjectWrap<NativeProcessBase> {
   public:

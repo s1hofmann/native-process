@@ -22,9 +22,10 @@ Napi::Object NativeWindowBase::Init(Napi::Env env, Napi::Object exports) {
 
 NativeWindowBase::NativeWindowBase(const Napi::CallbackInfo &info)
                                    : Napi::ObjectWrap<NativeWindowBase>(info),
-                                     uiElementRef(*info[0].As<Napi::External<AXUIElementRef>>().Data()) {
+                                     ) {
     Napi::Env env = info.Env();
     Napi::HandleScope scope(env);
+    AXUIElementRef uiElementRef = *info[0].As<Napi::External<AXUIElementRef>>().Data();
     CFRetain(this->uiElementRef);
 }
 

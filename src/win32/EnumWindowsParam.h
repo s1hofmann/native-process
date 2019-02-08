@@ -5,5 +5,5 @@
 
 struct EnumWindowsParam {
     DWORD pid;
-    std::vector<HWND> windowHandles;
+    std::vector<HWND> *windowHandles;
 };

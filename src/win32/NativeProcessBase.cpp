@@ -45,12 +45,14 @@ Napi::Value NativeProcessBase::getWindows(const Napi::CallbackInfo &info) {
     const int32_t pid = info[0].As<Napi::Number>().Int32Value();
     Napi::Object windowBoundary = Napi::Object::New(info.Env());
 
+    std::vector<HWND> windowHandles;
     EnumWindowsParam enumWindowsParam;
     enumWindowsParam.pid = static_cast<DWORD>(pid);
+    enumWindowsParam.windowHandles = &windowHandles;
 
-    // EnumWindows(EnumWindowsHandler, (LPARAM)&enumWindowsParam);
+    EnumWindows(EnumWindowsCallbackFunc, (LPARAM)&enumWindowsParam);
 
-    std::cout << enumWindowsParam.windowHandles.size() << std::endl;
+    std::cout << enumWindowsParam.windowHandles->size() << std::endl;
 
     return windowBoundary;
 }
