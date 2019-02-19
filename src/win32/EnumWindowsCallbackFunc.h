@@ -15,20 +15,16 @@ BOOL CALLBACK EnumWindowsCallbackFunc(HWND hwnd, LPARAM lParam) {
     // The only way for a C API to pass arbitrary data is by means of a void*.
     EnumWindowsParam& param = *reinterpret_cast<EnumWindowsParam*>(lParam);
 
-    std::cout << "EnumWindows" << std::endl;
-
     TCHAR title[512];
     GetWindowText(hwnd, title, sizeof(title));
-    std::cout << title << std::endl;
 
     DWORD processId;
     GetWindowThreadProcessId(hwnd, &processId);
-    param.windowHandles->push_back(hwnd);
-    std::cout << "Enum id: " << processId << " param id: " << param.pid << std::endl;
     if (processId != param.pid) {
         return TRUE;
+    } else {
+        param.windowHandles->push_back(hwnd);
     }
-    param.windowHandles->push_back(hwnd);
 
     return TRUE;
 }
